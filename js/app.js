@@ -1,17 +1,26 @@
+// Sprite superclass
+var Sprite = function(x, y, url){
+    this.x = x;
+    this.y = y;
+    // The image file for this sprite, this uses
+    // a helper we've provided to easily load images
+    this.sprite = url;
+};
+// Draw the sprite on the screen, required method for game
+Sprite.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
 // Enemies our player must avoid
 // row is the row in the grid from the top
 // enemies should be in rows 1-3
 var Enemy = function(row, speed) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-    this.x = 0;
-    this.y = 83 * row - 21; // center the image in the tile
-    this.speed = speed;
+    Sprite.call(this, 0, 83 * row - 21, 'images/enemy-bug.png');
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+    this.speed = speed;
 };
+Enemy.prototype = Object.create(Sprite.prototype);
+Enemy.prototype.constructor = Enemy;
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -20,11 +29,6 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += this.speed * dt;
-};
-
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 // Now write your own player class
