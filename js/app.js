@@ -15,7 +15,7 @@ Sprite.prototype.render = function() {
 // row is the row in the grid from the top
 // enemies should be in rows 1-3
 var Enemy = function(row, speed) {
-    Sprite.call(this, 0, 83 * row - 21, 'images/enemy-bug.png');
+    Sprite.call(this, 0, 83 * row - 25, 'images/enemy-bug.png');
 
     this.speed = speed;
 };
