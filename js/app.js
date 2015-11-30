@@ -35,9 +35,14 @@ Enemy.prototype.update = function(dt) {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function(){
+    var startX = 2 * 101; // 3rd column
+    var startY = 5 * 83 - 35; // 6th row
+    Sprite.call(this, startX, startY, 'images/char-boy.png');
 };
+Player.prototype = Object.create(Sprite.prototype);
+Player.prototype.constructor = Player;
+
 Player.prototype.update = function(){};
-Player.prototype.render = function(){};
 Player.prototype.handleInput = function(key){};
 
 // Now instantiate your objects.
