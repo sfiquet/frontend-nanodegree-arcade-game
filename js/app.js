@@ -1,21 +1,43 @@
+// Rectangle class
+var Rect = function(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+};
+Rect.prototype.intersects = function(otherRect){
+    if (this.x < otherRect.x + otherRect.width &&
+            this.x + this.width > otherRect.x &&
+            this.y < otherRect.y + otherRect.height &&
+            this.height + this.y > otherRect.y) {
+        return true;
+    }
+    return false;
+};
+
 // Sprite superclass
-var Sprite = function(x, y, url){
+// rect is the collision rect. Its position should be relative to (x, y).
+var Sprite = function(x, y, url, rect){
     this.x = x;
     this.y = y;
     // The image file for this sprite, this uses
     // a helper we've provided to easily load images
     this.sprite = url;
+    this.rect = rect; // collision rect
 };
 // Draw the sprite on the screen, required method for game
 Sprite.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    // debug
+    ctx.strokeStyle = "red";
+    ctx.strokeRect(this.x + this.rect.x, this.y + this.rect.y, this.rect.width, this.rect.height);
 };
 
 // Enemies our player must avoid
 // row is the row in the grid from the top
 // enemies should be in rows 1-3
 var Enemy = function(row, speed) {
-    Sprite.call(this, 0, 83 * row - 25, 'images/enemy-bug.png');
+    Sprite.call(this, 0, 83 * row - 25, 'images/enemy-bug.png', new Rect(2, 78, 97, 64));
 
     this.speed = speed;
 };
@@ -35,7 +57,7 @@ Enemy.prototype.update = function(dt) {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function(col, row){
-    Sprite.call(this, 0, 0, 'images/char-boy.png');
+    Sprite.call(this, 0, 0, 'images/char-boy.png', new Rect(18, 63, 65, 75));
     this.col = col;
     this.row = row;
     this.update();
