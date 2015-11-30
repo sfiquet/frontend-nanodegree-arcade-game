@@ -34,16 +34,34 @@ Enemy.prototype.update = function(dt) {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function(){
-    var startX = 2 * 101; // 3rd column
-    var startY = 5 * 83 - 35; // 6th row
-    Sprite.call(this, startX, startY, 'images/char-boy.png');
+var Player = function(col, row){
+    Sprite.call(this, 0, 0, 'images/char-boy.png');
+    this.col = col;
+    this.row = row;
+    this.update();
 };
 Player.prototype = Object.create(Sprite.prototype);
 Player.prototype.constructor = Player;
 
-Player.prototype.update = function(){};
-Player.prototype.handleInput = function(key){};
+Player.prototype.MAX_COLS = 5;
+Player.prototype.MAX_ROWS = 6;
+
+Player.prototype.update = function(){
+    this.x = this.col * 101;
+    this.y = this.row * 83 - 35;
+};
+
+Player.prototype.handleInput = function(key){
+    if (key === 'left' && this.col > 0) {
+        this.col -= 1;
+    } else if (key === 'up' && this.row > 1) {
+        this.row -= 1;
+    } else if (key === 'right' && this.col < this.MAX_COLS - 1) {
+        this.col += 1;
+    } else if (key === 'down' && this.row < this.MAX_ROWS - 1) {
+        this.row += 1;
+    }
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -52,7 +70,8 @@ var allEnemies =[];
 allEnemies.push(new Enemy(1, 30));
 allEnemies.push(new Enemy(2, 50));
 allEnemies.push(new Enemy(3, 40));
-var player = new Player();
+
+var player = new Player(2, 5);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
