@@ -156,6 +156,7 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
+        player.render();
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
@@ -163,7 +164,6 @@ var Engine = (function(global) {
             enemy.render();
         });
 
-        player.render();
     }
 
     /* This function does nothing but it could have been a good place to
