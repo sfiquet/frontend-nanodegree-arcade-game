@@ -48,10 +48,10 @@ Sprite.prototype.collidesWith = function(otherSprite) {
 // Enemies our player must avoid
 // row is the row in the grid from the top
 // enemies should be in rows 1-3
-var Enemy = function(row, speed) {
+var Enemy = function(row) {
     Sprite.call(this, this.START_X, 83 * row - 25, 'images/enemy-bug.png', new Rect(12, 88, 77, 44));
 
-    this.speed = speed;
+    this.reset();
 };
 Enemy.prototype = Object.create(Sprite.prototype);
 Enemy.prototype.constructor = Enemy;
@@ -68,8 +68,13 @@ Enemy.prototype.update = function(dt) {
 
     // if out of the canvas, recycle the enemy
     if (this.x > ctx.canvas.width) {
-        this.x = this.START_X;
+        this.reset();
     }
+};
+
+Enemy.prototype.reset = function() {
+    this.x = this.START_X;
+    this.speed = getRandomIntInclusive(150, 300);
 };
 
 //*****************************************************************************
@@ -111,13 +116,19 @@ Player.prototype.reset = function(){
 };
 
 //*****************************************************************************
+// Helper functions
+function getRandomIntInclusive(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+//*****************************************************************************
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies =[];
-allEnemies.push(new Enemy(1, 30));
-allEnemies.push(new Enemy(2, 50));
-allEnemies.push(new Enemy(3, 40));
+allEnemies.push(new Enemy(1));
+allEnemies.push(new Enemy(2));
+allEnemies.push(new Enemy(3));
 
 var player = new Player(2, 5);
 
