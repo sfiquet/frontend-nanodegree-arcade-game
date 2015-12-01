@@ -29,15 +29,25 @@ var Sprite = function(x, y, url, rect){
 Sprite.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     // debug
-    ctx.strokeStyle = "red";
-    ctx.strokeRect(this.x + this.rect.x, this.y + this.rect.y, this.rect.width, this.rect.height);
+    //ctx.strokeStyle = "red";
+    //ctx.strokeRect(this.x + this.rect.x, this.y + this.rect.y, this.rect.width, this.rect.height);
+};
+
+Sprite.prototype.collisionRect = function() {
+    return new Rect(this.x + this.rect.x, this.y + this.rect.y, this.rect.width, this.rect.height);
+};
+
+Sprite.prototype.collidesWith = function(otherSprite) {
+    var curRect = this.collisionRect();
+    var otherRect = otherSprite.collisionRect();
+    return curRect.intersects(otherRect);
 };
 
 // Enemies our player must avoid
 // row is the row in the grid from the top
 // enemies should be in rows 1-3
 var Enemy = function(row, speed) {
-    Sprite.call(this, 0, 83 * row - 25, 'images/enemy-bug.png', new Rect(2, 78, 97, 64));
+    Sprite.call(this, 0, 83 * row - 25, 'images/enemy-bug.png', new Rect(12, 88, 77, 44));
 
     this.speed = speed;
 };
@@ -57,7 +67,7 @@ Enemy.prototype.update = function(dt) {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function(col, row){
-    Sprite.call(this, 0, 0, 'images/char-boy.png', new Rect(18, 63, 65, 75));
+    Sprite.call(this, 0, 0, 'images/char-boy.png', new Rect(28, 73, 45, 55));
     this.col = col;
     this.row = row;
     this.update();
@@ -83,6 +93,11 @@ Player.prototype.handleInput = function(key){
     } else if (key === 'down' && this.row < this.MAX_ROWS - 1) {
         this.row += 1;
     }
+};
+
+Player.prototype.reset = function(){
+    this.col = 2;
+    this.row = 5;
 };
 
 // Now instantiate your objects.
