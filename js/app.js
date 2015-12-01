@@ -86,7 +86,7 @@ var Player = function(col, row){
     this.col = col;
     this.row = row;
     this.update();
-    this.resetting = false;
+    this.resetMinTime = 0;
     this.resetStart = 0;
 };
 Player.prototype = Object.create(Sprite.prototype);
@@ -96,8 +96,8 @@ Player.prototype.MAX_COLS = 5;
 Player.prototype.MAX_ROWS = 6;
 
 Player.prototype.update = function(){
-    if (this.resetting && Date.now() - this.resetStart > 10) {
-        this._reset_();
+    if (this.resetMinTime && Date.now() - this.resetStart > this.resetMinTime) {
+        this.finishReset();
     }
     this.x = this.col * 101;
     this.y = this.row * 83 - 35;
@@ -115,20 +115,24 @@ Player.prototype.handleInput = function(key){
     }
 
     if (this.row === 0) {
-        this.reset();
+        this.startReset(200);
     }
 };
 
-// sets a flag. The player will only be really reset by the update method.
-Player.prototype.reset = function() {
-    this.resetting = true;
+Player.prototype.loseLife = function() {
+    this.startReset(10);
+};
+
+// set up delayed reset. The player will only be really reset by the update method.
+Player.prototype.startReset = function(resetTime) {
+    this.resetMinTime = resetTime;
     this.resetStart = Date.now();
 };
 
-Player.prototype._reset_ = function(){
+Player.prototype.finishReset = function(){
     this.col = 2;
     this.row = 5;
-    this.resetting = false;
+    this.resetMinTime = 0;
     this.resetStart = 0;
 };
 

@@ -100,7 +100,7 @@ var Engine = (function(global) {
     function checkCollisions() {
         allEnemies.forEach(function(enemy) {
             if (enemy.collidesWith(player)) {
-                player.reset();
+                player.loseLife();
                 return;
             }
         });
