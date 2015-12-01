@@ -101,7 +101,7 @@ Player.prototype.update = function(){
 Player.prototype.handleInput = function(key){
     if (key === 'left' && this.col > 0) {
         this.col -= 1;
-    } else if (key === 'up' && this.row > 1) {
+    } else if (key === 'up' && this.row > 0) {
         this.row -= 1;
     } else if (key === 'right' && this.col < this.MAX_COLS - 1) {
         this.col += 1;
