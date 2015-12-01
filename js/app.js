@@ -15,6 +15,7 @@ Rect.prototype.intersects = function(otherRect){
     return false;
 };
 
+//*****************************************************************************
 // Sprite superclass
 // rect is the collision rect. Its position should be relative to (x, y).
 var Sprite = function(x, y, url, rect){
@@ -43,16 +44,19 @@ Sprite.prototype.collidesWith = function(otherSprite) {
     return curRect.intersects(otherRect);
 };
 
+//*****************************************************************************
 // Enemies our player must avoid
 // row is the row in the grid from the top
 // enemies should be in rows 1-3
 var Enemy = function(row, speed) {
-    Sprite.call(this, 0, 83 * row - 25, 'images/enemy-bug.png', new Rect(12, 88, 77, 44));
+    Sprite.call(this, this.START_X, 83 * row - 25, 'images/enemy-bug.png', new Rect(12, 88, 77, 44));
 
     this.speed = speed;
 };
 Enemy.prototype = Object.create(Sprite.prototype);
 Enemy.prototype.constructor = Enemy;
+
+Enemy.prototype.START_X = -101;
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -61,8 +65,14 @@ Enemy.prototype.update = function(dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += this.speed * dt;
+
+    // if out of the canvas, recycle the enemy
+    if (this.x > ctx.canvas.width) {
+        this.x = this.START_X;
+    }
 };
 
+//*****************************************************************************
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
@@ -100,6 +110,7 @@ Player.prototype.reset = function(){
     this.row = 5;
 };
 
+//*****************************************************************************
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
