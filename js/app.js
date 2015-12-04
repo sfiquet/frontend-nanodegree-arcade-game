@@ -88,6 +88,7 @@ var Player = function(col, row){
     this.update();
     this.resetMinTime = 0;
     this.resetStart = 0;
+    this.lives = 5;
 };
 Player.prototype = Object.create(Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -120,6 +121,7 @@ Player.prototype.handleInput = function(key){
 };
 
 Player.prototype.loseLife = function() {
+    this.lives -= 1;
     this.startReset(10);
 };
 
@@ -134,6 +136,26 @@ Player.prototype.finishReset = function(){
     this.row = 5;
     this.resetMinTime = 0;
     this.resetStart = 0;
+};
+
+//*****************************************************************************
+
+var LifeCounter = function(player) {
+    this.player = player;
+};
+
+LifeCounter.prototype.render = function(){
+    // tiny player images as life counters
+    var img = Resources.get(this.player.sprite);
+    var xOffset = 10;
+    var yOffset = -5;
+    var ratio = 0.3;
+    var width = img.width * ratio;
+    var height = img.height * ratio;
+    for (var i = 0; i < player.lives; i++) {
+        ctx.drawImage(img, xOffset, yOffset, width, height);
+        xOffset += width;
+    }
 };
 
 //*****************************************************************************
@@ -152,6 +174,7 @@ allEnemies.push(new Enemy(2));
 allEnemies.push(new Enemy(3));
 
 var player = new Player(2, 5);
+var lifeCounter = new LifeCounter(player);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

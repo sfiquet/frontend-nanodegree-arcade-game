@@ -147,6 +147,7 @@ var Engine = (function(global) {
             }
         }
 
+        lifeCounter.render();
 
         renderEntities();
     }
