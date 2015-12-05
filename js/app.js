@@ -186,5 +186,7 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
-    player.handleInput(allowedKeys[e.keyCode]);
+    if (player.lives > 0) {
+        player.handleInput(allowedKeys[e.keyCode]);
+    }
 });

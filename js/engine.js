@@ -56,7 +56,9 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        if (player.lives > 0) {
+            win.requestAnimationFrame(main);
+        }
     }
 
     /* This function does some initial setup that should only occur once,
@@ -150,6 +152,22 @@ var Engine = (function(global) {
         lifeCounter.render();
 
         renderEntities();
+
+        if (player.lives <= 0) {
+            var text = 'Game Over';
+            var x = canvas.width / 2;
+            var y = canvas.height / 2 + 18;
+
+            ctx.save();
+            ctx.textAlign = "center";
+            ctx.strokeStyle = "black";
+            ctx.fillStyle = "white";
+            ctx.font = "48pt Impact";
+            ctx.lineWidth = 3;
+            ctx.fillText(text, x, y);
+            ctx.strokeText(text, x, y);
+            ctx.restore();
+        }
     }
 
     /* This function is called by the render function and is called on each game
