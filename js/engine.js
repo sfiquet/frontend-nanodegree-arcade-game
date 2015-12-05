@@ -150,6 +150,7 @@ var Engine = (function(global) {
         }
 
         lifeCounter.render();
+        scoreCounter.render();
 
         renderEntities();
 

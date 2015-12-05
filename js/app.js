@@ -89,6 +89,7 @@ var Player = function(col, row){
     this.resetMinTime = 0;
     this.resetStart = 0;
     this.lives = 5;
+    this.score = 0;
 };
 Player.prototype = Object.create(Sprite.prototype);
 Player.prototype.constructor = Player;
@@ -116,6 +117,7 @@ Player.prototype.handleInput = function(key){
     }
 
     if (this.row === 0) {
+        this.score += 1;
         this.startReset(200);
     }
 };
@@ -159,6 +161,28 @@ LifeCounter.prototype.render = function(){
 };
 
 //*****************************************************************************
+
+var ScoreCounter = function(player) {
+    this.player = player;
+};
+
+ScoreCounter.prototype.render = function(){
+    var x = ctx.canvas.width - 10;
+    var y = 24;
+    var text = 'Score: ' + this.player.score;
+    ctx.save();
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "white";
+    ctx.font = "24pt Impact";
+    ctx.lineWidth = 2;
+    ctx.fillText(text, x, y);
+    ctx.strokeText(text, x, y);
+    ctx.restore();
+};
+
+//*****************************************************************************
 // Helper functions
 function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -175,6 +199,7 @@ allEnemies.push(new Enemy(3));
 
 var player = new Player(2, 5);
 var lifeCounter = new LifeCounter(player);
+var scoreCounter = new ScoreCounter(player);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
