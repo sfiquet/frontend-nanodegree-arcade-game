@@ -106,6 +106,9 @@ Player.prototype.update = function(){
 };
 
 Player.prototype.handleInput = function(key){
+    // don't process input if we are in the process of resetting
+    if (this.isResetting()) return;
+
     if (key === 'left' && this.col > 0) {
         this.col -= 1;
     } else if (key === 'up' && this.row > 0) {
@@ -138,6 +141,10 @@ Player.prototype.finishReset = function(){
     this.row = 5;
     this.resetMinTime = 0;
     this.resetStart = 0;
+};
+
+Player.prototype.isResetting = function(){
+    return (this.resetStart !== 0);
 };
 
 //*****************************************************************************
