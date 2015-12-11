@@ -211,7 +211,7 @@ var Game = function() {
 Game.prototype.update = function(dt) {
 
     // don't update the game objects if game over
-    if (this.state === 'game over') return;
+    if (this.state === 'idle') return;
 
     this.updateEntities(dt);
     this.checkCollisions();
@@ -247,6 +247,10 @@ Game.prototype.checkCollisions = function() {
 };
 
 Game.prototype.render = function() {
+
+    // don't render if idle, there's nothing happening
+    if (this.state === 'idle')  return;
+
     /* This array holds the relative URL to the image used
      * for that particular row of the game level.
      */
@@ -310,6 +314,8 @@ Game.prototype.render = function() {
         ctx.strokeText(helpText, x, y);
 
         ctx.restore();
+        // go into idle state so we don't refresh the screen all the time
+        this.state = 'idle';
     }
 };
 
@@ -335,7 +341,7 @@ Game.prototype.handleInput = function(key){
 
         this.player.handleInput(key);
 
-    } else  if (this.state === 'game over') {
+    } else  if (this.state === 'idle') {
 
         if (key === 'space') {
 
