@@ -186,8 +186,8 @@ ScoreCounter.prototype.render = function(){
     ctx.textBaseline = "middle";
     ctx.strokeStyle = "black";
     ctx.fillStyle = "white";
-    ctx.font = "24pt Impact";
-    ctx.lineWidth = 2;
+    ctx.font = "24pt Aclonica";
+    ctx.lineWidth = 1;
     ctx.fillText(text, x, y);
     ctx.strokeText(text, x, y);
     ctx.restore();
@@ -298,12 +298,12 @@ Game.prototype.render = function() {
         ctx.textAlign = "center";
         ctx.strokeStyle = "black";
         ctx.fillStyle = "white";
-        ctx.font = "48pt Impact";
-        ctx.lineWidth = 3;
+        ctx.font = "48pt Aclonica";
+        ctx.lineWidth = 2;
         ctx.fillText(text, x, y);
         ctx.strokeText(text, x, y);
 
-        ctx.font = "24pt Impact";
+        ctx.font = "24pt Aclonica";
         ctx.lineWidth = 1;
         y = canvas.height - 70;
         ctx.fillText(helpText, x, y);
