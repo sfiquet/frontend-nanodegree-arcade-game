@@ -83,14 +83,12 @@ Enemy.prototype.reset = function() {
 // a handleInput() method.
 var Player = function(col, row){
     Sprite.call(this, 0, 0, 'images/char-boy.png', new Rect(28, 73, 45, 55));
-    this.col = col;
-    this.row = row;
-    this.update();
-    this.resetMinTime = 0;
-    this.resetStart = 0;
-    this.lives = 5;
-    this.score = 0;
+
+    this.startCol = col;
+    this.startRow = row;
+    this.init();
 };
+
 Player.prototype = Object.create(Sprite.prototype);
 Player.prototype.constructor = Player;
 
@@ -137,14 +135,20 @@ Player.prototype.startReset = function(resetTime) {
 };
 
 Player.prototype.finishReset = function(){
-    this.col = 2;
-    this.row = 5;
+    this.col = this.startCol;
+    this.row = this.startRow;
     this.resetMinTime = 0;
     this.resetStart = 0;
 };
 
 Player.prototype.isResetting = function(){
     return (this.resetStart !== 0);
+};
+
+Player.prototype.init = function() {
+    this.finishReset();
+    this.lives = 5;
+    this.score = 0;
 };
 
 //*****************************************************************************
@@ -161,7 +165,7 @@ LifeCounter.prototype.render = function(){
     var ratio = 0.3;
     var width = img.width * ratio;
     var height = img.height * ratio;
-    for (var i = 0; i < player.lives; i++) {
+    for (var i = 0; i < this.player.lives; i++) {
         ctx.drawImage(img, xOffset, yOffset, width, height);
         xOffset += width;
     }
@@ -190,6 +194,159 @@ ScoreCounter.prototype.render = function(){
 };
 
 //*****************************************************************************
+var Game = function() {
+    this.state = 'playing';
+
+    // set up component objects
+    this.allEnemies =[];
+    this.allEnemies.push(new Enemy(1));
+    this.allEnemies.push(new Enemy(2));
+    this.allEnemies.push(new Enemy(3));
+
+    this.player = new Player(2, 5);
+    this.lifeCounter = new LifeCounter(this.player);
+    this.scoreCounter = new ScoreCounter(this.player);
+};
+
+Game.prototype.update = function(dt) {
+
+    // don't update the game objects if game over
+    if (this.state === 'game over') return;
+
+    this.updateEntities(dt);
+    this.checkCollisions();
+};
+
+Game.prototype.updateEntities = function(dt) {
+
+    if (this.player.lives <= 0) {
+
+        this.state = 'game over';
+
+    } else {
+
+        this.allEnemies.forEach(function(enemy) {
+
+            enemy.update(dt);
+        });
+
+        this.player.update();        
+    }
+};
+
+Game.prototype.checkCollisions = function() {
+
+    for (var i = 0; i < this.allEnemies.length; i++) {
+
+        if (this.allEnemies[i].collidesWith(this.player)) {
+
+            this.player.loseLife();
+            break;
+        }
+    }
+};
+
+Game.prototype.render = function() {
+    /* This array holds the relative URL to the image used
+     * for that particular row of the game level.
+     */
+    var rowImages = [
+            'images/water-block.png',   // Top row is water
+            'images/stone-block.png',   // Row 1 of 3 of stone
+            'images/stone-block.png',   // Row 2 of 3 of stone
+            'images/stone-block.png',   // Row 3 of 3 of stone
+            'images/grass-block.png',   // Row 1 of 2 of grass
+            'images/grass-block.png'    // Row 2 of 2 of grass
+        ],
+        numRows = 6,
+        numCols = 5,
+        row, col, canvas;
+
+    canvas = ctx.canvas;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    /* Loop through the number of rows and columns we've defined above
+     * and, using the rowImages array, draw the correct image for that
+     * portion of the "grid"
+     */
+    for (row = 0; row < numRows; row++) {
+        for (col = 0; col < numCols; col++) {
+            /* The drawImage function of the canvas' context element
+             * requires 3 parameters: the image to draw, the x coordinate
+             * to start drawing and the y coordinate to start drawing.
+             * We're using our Resources helpers to refer to our images
+             * so that we get the benefits of caching these images, since
+             * we're using them over and over.
+             */
+            ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+        }
+    }
+
+    this.lifeCounter.render();
+    this.scoreCounter.render();
+
+    this.renderEntities();
+
+    if (this.state === 'game over') {
+        var text = 'Game Over';
+        var x = canvas.width / 2;
+        var y = canvas.height / 2 + 18;
+
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.strokeStyle = "black";
+        ctx.fillStyle = "white";
+        ctx.font = "48pt Impact";
+        ctx.lineWidth = 3;
+        ctx.fillText(text, x, y);
+        ctx.strokeText(text, x, y);
+        ctx.restore();
+    }
+};
+
+/* This function is called by the render function and is called on each game
+ * tick. It's purpose is to then call the render functions you have defined
+ * on your enemy and player entities within app.js
+ */
+Game.prototype.renderEntities = function() {
+    /* Loop through all of the objects within the allEnemies array and call
+     * the render function you have defined.
+     */
+    this.allEnemies.forEach(function(enemy) {
+
+        enemy.render();
+    });
+
+    this.player.render();
+}
+
+Game.prototype.handleInput = function(key){
+
+    if (this.state === 'playing') {
+
+        this.player.handleInput(key);
+
+    } else  if (this.state === 'game over') {
+
+        if (key === 'space') {
+            
+            this.reset();
+        }
+    }
+};
+
+Game.prototype.reset = function() {
+
+    this.allEnemies.forEach(function(enemy) {
+
+        enemy.reset();
+    });
+
+    this.player.init();
+    this.state = 'playing';
+};
+
+//*****************************************************************************
 // Helper functions
 function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -197,28 +354,18 @@ function getRandomIntInclusive(min, max) {
 
 //*****************************************************************************
 // Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-var allEnemies =[];
-allEnemies.push(new Enemy(1));
-allEnemies.push(new Enemy(2));
-allEnemies.push(new Enemy(3));
-
-var player = new Player(2, 5);
-var lifeCounter = new LifeCounter(player);
-var scoreCounter = new ScoreCounter(player);
+var game = new Game();
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
+        32: 'space',
         37: 'left',
         38: 'up',
         39: 'right',
         40: 'down'
     };
 
-    if (player.lives > 0) {
-        player.handleInput(allowedKeys[e.keyCode]);
-    }
-});
+    game.handleInput(allowedKeys[e.keyCode]);
+ });
