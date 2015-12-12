@@ -179,17 +179,17 @@ var ScoreCounter = function(player) {
 
 ScoreCounter.prototype.render = function(){
     var x = ctx.canvas.width - 10;
-    var y = 24;
+    var y = 28;
     var text = 'Score: ' + this.player.score;
     ctx.save();
     ctx.textAlign = "right";
     ctx.textBaseline = "middle";
-    ctx.strokeStyle = "black";
-    ctx.fillStyle = "white";
-    ctx.font = "24pt Aclonica";
+    ctx.strokeStyle = "blue";
+    ctx.fillStyle = "DarkSlateGray";
+    ctx.font = "20pt Aclonica";
     ctx.lineWidth = 1;
-    ctx.fillText(text, x, y);
     ctx.strokeText(text, x, y);
+    ctx.fillText(text, x, y);
     ctx.restore();
 };
 
@@ -295,23 +295,23 @@ Game.prototype.render = function() {
         var text = 'Game Over';
         var x = canvas.width / 2;
         var y = canvas.height / 2 + 18;
-        var helpText = 'Press Space to play again.';
+        var helpText = 'Press the space bar to play again';
 
         ctx.save();
 
         ctx.textAlign = "center";
-        ctx.strokeStyle = "black";
+        ctx.strokeStyle = "DarkSlateGray";
         ctx.fillStyle = "white";
         ctx.font = "48pt Aclonica";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
+        ctx.strokeText(text, x+1, y+1);
         ctx.fillText(text, x, y);
-        ctx.strokeText(text, x, y);
 
-        ctx.font = "24pt Aclonica";
-        ctx.lineWidth = 1;
-        y = canvas.height - 70;
-        ctx.fillText(helpText, x, y);
+        ctx.font = "18pt Aclonica";
+        ctx.lineWidth = 2;
+        y = canvas.height - 90;
         ctx.strokeText(helpText, x, y);
+        ctx.fillText(helpText, x, y);
 
         ctx.restore();
         // go into idle state so we don't refresh the screen all the time
